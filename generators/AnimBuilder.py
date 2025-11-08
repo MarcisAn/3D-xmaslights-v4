@@ -1,7 +1,10 @@
+import time
 import sys
 
+import requests
+
 def clamp(x):
-    return max(0, min(x, 100))
+    return max(0, min(x, 255))
 
 
 class AnimationBuilder:
@@ -19,34 +22,26 @@ class AnimationBuilder:
         self.frames.append(self.light_state.copy())
 
     def pack_bytes(self):
-        bitstring = 0
-        bitlen = 0
+        color_bytes = []
         for frame in self.frames:
             for led in frame:
                 for v in led:
-                    if not 0 <= v < 32:
-                        raise ValueError(f"Value {v} out of 5-bit range (0–31)")
-                    bitstring = (bitstring << 5) | v
-                    bitlen += 5
-
-        # Round up to nearest byte
-        num_bytes = (bitlen + 7) // 8
-        return bitstring.to_bytes(num_bytes, 'big')
+                    color_bytes.append(clamp(v))
+                    
+        return color_bytes
 
 
-builder = AnimationBuilder(2)
+builder = AnimationBuilder(400)
 
-builder.light(0,0,0,1)
-builder.update()
-builder.light(1, 1, 0, 1)
-builder.update()
+for i in range(400):
+    if i > 200:
+        builder.light(i,0,0,255)
+    else:
+        builder.light(i, 0, 255 , 0)
+    builder.update()
 
 
-# print(builder.frames)
-# print(builder.pack_bytes())
-
-sys.stdout.buffer.write(builder.pack_bytes())
-sys.stdout.flush()
-
-with open("led_data.bin", "wb") as f:
-    f.write(builder.pack_bytes())
+requests.post(
+    "http://localhost:3000/animationIsGenerated",
+    data=bytearray(builder.pack_bytes()),
+)

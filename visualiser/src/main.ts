@@ -1,4 +1,4 @@
-import { all_to_black, createScene, renderVis } from "./counter";
+import { all_to_black, createScene, changeLED } from "./counter";
 import "./style.css";
 import { io } from "socket.io-client";
 import { CanvasRecorder } from "./CanvasRecorder.ts";
@@ -23,30 +23,29 @@ let recording = false;
 let frame = 0;
 let intervalId: number;
 
-function unpack5BitValues(arrayBuffer: ArrayBuffer, count: number) {
-  const bytes = new Uint8Array(arrayBuffer);
-  let bitString = 0n; // use BigInt for safety
-  for (const b of bytes) {
-    bitString = (bitString << 8n) | BigInt(b);
-  }
-
-  const totalBits = BigInt(count * 5);
-  let shift = totalBits - 5n;
-  const values = [];
-
-  for (let i = 0; i < count; i++) {
-    const value = Number((bitString >> shift) & 0x1Fn); // 0x1F = 5 bits mask
-    values.push(value);
-    shift -= 5n;
-  }
-
-  return values;
-}
-
+const LED_COUNT = 400;
+let already_running = false;
 socket.on("animationData", (data) => {
-  console.log(unpack5BitValues(data, 2*400*2));
+  console.log("frame emit");
+  if (!already_running) {
+    const view = new Uint8Array(data);
+    const frame_count = view.length / (LED_COUNT * 3);
+    for (let frame = 0; frame < frame_count; frame++) {}
+    let frame = 0;
+    setInterval(() => {
+      for (let led = 0; led < LED_COUNT; led++) {
+        const red = led * 3 + frame * LED_COUNT * 3;
+        changeLED(led, view[red], view[red + 1], view[red + 2]);
+      }
+      if (frame == frame_count - 1) {
+        frame = 0;
+      } else {
+        frame++;
+      }
+    }, 20);
+  }
+  already_running = true;
 });
-
 
 socket.on("reciveAnimation", (data) => {
   clearInterval(intervalId);

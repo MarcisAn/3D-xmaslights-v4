@@ -2,7 +2,6 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import chords from "../../cords.json";
 
-
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 1000);
 const geometry = new THREE.BoxGeometry();
@@ -62,13 +61,14 @@ export async function all_to_black() {
     obj.changeColor(0, 0, 0);
   }
 }
-export async function renderVis(data: any) {
-  //console.log(data);
-  data.forEach((light: string[]) => {
-    let index = light[0];
-    const obj = scene.getObjectByName(index.toString());
-    //console.log(light);
-    //@ts-ignore
-    obj.changeColor(light[1], light[2], light[3]);
-  });
+export async function changeLED(
+  index: number,
+  red: number,
+  green: number,
+  blue: number
+) {
+  const obj = scene.getObjectByName(index.toString());
+  //@ts-ignore
+  obj.changeColor(red, green, blue);
+  
 }
