@@ -76,7 +76,7 @@
       <div class="frame-stripe frame-stripe-bottom"></div>
 
       <iframe
-        src="https://christmastree.vercel.app"
+        src="http://localhost:5173"
         title="Live Christmas Tree"
         class="tree-iframe"
         loading="lazy"
@@ -169,6 +169,7 @@
 
   .tree-container {
     padding: 1.5rem 1rem;
+    margin: auto;
   }
 
   .tree-frame {
@@ -177,6 +178,8 @@
     overflow: hidden;
     border: 4px solid var(--accent);
     background-color: var(--card);
+    width: 300px;
+    margin: auto;
   }
 
   .frame-stripe {
@@ -197,10 +200,10 @@
   }
 
   .tree-iframe {
-    width: 100%;
-    aspect-ratio: 4/3;
     border: 0;
     display: block;
+    width: 300px;
+    height: 300px;
   }
 
   .live-badge {

@@ -24,28 +24,31 @@ let frame = 0;
 let intervalId: number;
 
 const LED_COUNT = 400;
-let already_running = false;
 socket.on("animationData", (data) => {
-  console.log("frame emit");
-  if (!already_running) {
-    const view = new Uint8Array(data);
-    const frame_count = view.length / (LED_COUNT * 3);
-    for (let frame = 0; frame < frame_count; frame++) {}
-    let frame = 0;
-    setInterval(() => {
-      for (let led = 0; led < LED_COUNT; led++) {
-        const red = led * 3 + frame * LED_COUNT * 3;
-        changeLED(led, view[red], view[red + 1], view[red + 2]);
-      }
-      if (frame == frame_count - 1) {
-        frame = 0;
-      } else {
-        frame++;
-      }
-    }, 20);
-  }
-  already_running = true;
+  recieveAnimation(data);
 });
+
+let intervalhandle;
+
+function recieveAnimation(data) {
+  const view = new Uint8Array(data);
+  const frame_count = view.length / (LED_COUNT * 3);
+  for (let frame = 0; frame < frame_count; frame++) {}
+  let frame = 0;
+  clearInterval(intervalhandle);  
+  intervalhandle = setInterval(() => {
+    for (let led = 0; led < LED_COUNT; led++) {
+      const red = led * 3 + frame * LED_COUNT * 3;
+      changeLED(led, view[red], view[red + 1], view[red + 2]);
+    }
+    if (frame == frame_count - 1) {
+      frame = 0;
+      return;
+    } else {
+      frame++;
+    }
+  }, 20);
+}
 
 // socket.on("reciveAnimation", (data) => {
 //   clearInterval(intervalId);
@@ -94,8 +97,7 @@ socket.on("animationData", (data) => {
 let html = ``;
 if (process.env.NODE_ENV == "development") {
   html = `
-
-  <button id="savevideo">save video</button>
+  <button id="savevideo">RECORD</button>
   <canvas id="canvas">
   </canvas>
 `;

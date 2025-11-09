@@ -50,6 +50,19 @@ export const createScene = (el: any) => {
     } catch (e) {}
     lightIndex += 1;
   }
+  const axesHelper = new THREE.AxesHelper(10);
+  axesHelper.translateY(0.001);
+  scene.add(axesHelper);
+  const size = 10;
+  const divisions = 70;
+  const gridHelper = new THREE.GridHelper(
+    size,
+    divisions,
+    new THREE.Color("rgb(51, 51, 51)"),
+    new THREE.Color("rgb(51, 51, 51)")
+  );
+  scene.add(gridHelper);
+
 
   resize();
   animate();
@@ -70,5 +83,4 @@ export async function changeLED(
   const obj = scene.getObjectByName(index.toString());
   //@ts-ignore
   obj.changeColor(red, green, blue);
-  
 }
