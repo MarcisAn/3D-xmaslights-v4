@@ -20,6 +20,6 @@ cd visualiser
 npm install
 npm dev
 ```
-4. Nokopēt failu `generators/animations/dev.py` un jaunajam failam piešķirt animācijas nosaukumu
+4. Nokopēt failu `generators/animations/dev.py` šajā pašā mapē un jaunajam failam piešķirt animācijas nosaukumu
 5. Šo failu palaižot animācija rādīsies vizualizācijā
-6. Norādes animācijas rakstīšanai ir python faila komentāros
+6. Norādes animācijas rakstīšanai ir šajā failā
