@@ -5,10 +5,11 @@ import { CanvasRecorder } from "./CanvasRecorder.ts";
 
 let server_url = "";
 if (import.meta.env.PROD) {
-  server_url = "wss://lampinas-server.cvgmerch.lv";
+  server_url = "wss://ledserver.andersons-m.lv";
 } else {
   server_url = "ws://localhost:3000";
 }
+// server_url = "wss://ledserver.andersons-m.lv";
 const socket = io(server_url, {
   autoConnect: true,
   reconnection: true,
