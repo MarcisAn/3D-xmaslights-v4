@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>High-Precision Timer with performance.now()</title>
+<style>
+  body { font-family: sans-serif; background: #111; color: #eee; text-align: center; padding-top: 3em; }
+  button { font-size: 1.2em; padding: 0.6em 1.2em; border: none; border-radius: 8px; background: #4a90e2; color: #fff; cursor: pointer; }
+  button:hover { background: #357ac7; }
+  #log { font-size: 1.2em; margin-top: 2em; }
+</style>
+</head>
+<body>
+<h2>High-Precision Timer (performance.now)</h2>
+<button id="startBtn">Start Timer</button>
+<div id="log">Waiting to start...</div>
+
+<script>
+document.getElementById('startBtn').addEventListener('click', () => {
+  const TICK_INTERVAL = 10; // milliseconds (target interval)
+  let nextTick = performance.now() + TICK_INTERVAL;
+  const logEl = document.getElementById('log');
+  let tickCount = 0;
+
+  function loop() {
+    const now = performance.now();
+    if (now >= nextTick) {
+      tickCount++;
+      const drift = (now - nextTick).toFixed(3);
+      console.log(`Tick ${tickCount}: drift = ${drift} ms`);
+      logEl.textContent = `Tick ${tickCount}: drift = ${drift} ms`;
+
+      // Schedule next tick
+      nextTick += TICK_INTERVAL;
+
+      // If drift is very large (e.g., tab was inactive), reset timer
+      if (now - nextTick > TICK_INTERVAL) {
+        nextTick = now + TICK_INTERVAL;
+      }
+    }
+
+    // Keep looping as fast as possible
+    requestAnimationFrame(loop);
+  }
+
+  logEl.textContent = "Timer started!";
+  loop();
+});
+</script>
+</body>
+</html>

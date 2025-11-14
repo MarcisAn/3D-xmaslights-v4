@@ -5,8 +5,10 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 const { log } = require("node:console");
 const spawn = require("child_process").spawn;
-const fs = require('fs');
+const fs = require("fs");
 var bodyParser = require("body-parser");
+
+const animations = require("../data/animations.json");
 
 // Server config
 const app = express();
@@ -16,32 +18,45 @@ app.use(bodyParser.raw({ type: "application/octet-stream", limit: "2mb" }));
 const server = createServer(app);
 const io = new Server(server);
 
-// app.get("/", (req, res) => {
-//   console.log(sockets.length);
-//   res.statusCode(200);
-// });
+// Store the socket objects for active connections
+let sockets = [];
+// Store the active animation speed
+let animation_speed = 1;
 
 // Called when user picks an animation to play
 app.post("/pickAnim", (req, res) => {
   console.log(req.body.name);
-  const pythonProcess = spawn("python", ["../generators/AnimBuilder.py"]);
+  const animation = (result = animations.filter((obj) => {
+    return obj.b === 6;
+  }));
+  if (!animation) {
+    res.status(400).end();
+    return;
+  }
+  const pythonProcess = spawn("python", [
+    "../generators/animations/" + animation.name + ".py"
+  ]);
+  console.log(pythonProcess.stdout);
+  
+  animation_speed = animation.speed;
   console.log("socket count: " + sockets.length);
 
   res.status(200).end();
 });
 
+// Caled by the generator when animation is generated and can be sent out to clients
 app.post("/animationIsGenerated", async (req, res) => {
   let buffers = await readBodyAsBuffer(req);
   console.log(buffers);
-  
+
   sockets.forEach((socket) => {
     socket.emit("animationData", buffers);
   });
-  res.status(200).end()
-})
-
-// Store the socket objects for active connections
-let sockets = [];
+  sockets.forEach((socket) => {
+    socket.emit("animationSpeed", animation_speed);
+  });
+  res.status(200).end();
+});
 
 io.on("connection", (socket) => {
   console.log("user connected");

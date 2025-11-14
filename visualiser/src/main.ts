@@ -17,18 +17,17 @@ const socket = io(server_url, {
   reconnectionDelay: 30,
   transports: ["websocket"],
 });
-let anim_data: any[] = [];
-let anim_speed = 10;
 let record = false;
-let recording = false;
-let frame = 0;
-let intervalId: number;
+
+let anim_speed = 90;
 
 const LED_COUNT = 400;
 socket.on("animationData", (data) => {
   recieveAnimation(data);
 });
-
+socket.on("animationSpeed", (data) => {
+  anim_speed = data
+});
 let intervalhandle;
 
 function recieveAnimation(data) {
@@ -48,7 +47,7 @@ function recieveAnimation(data) {
     } else {
       frame++;
     }
-  }, 20);
+  }, Math.pow(anim_speed, -1) * 400);
 }
 
 // socket.on("reciveAnimation", (data) => {

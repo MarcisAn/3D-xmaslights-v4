@@ -37,6 +37,7 @@ class AnimationBuilder:
 
         print(len(color_bytes))
         requests.post(
-            "https://ledserver.andersons-m.lv/animationIsGenerated",
+            # "https://ledserver.andersons-m.lv/animationIsGenerated",
+            "http://localhost:3000/animationIsGenerated",
             data=bytearray(color_bytes),
         )
