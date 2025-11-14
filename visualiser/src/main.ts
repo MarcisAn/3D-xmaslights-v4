@@ -4,7 +4,7 @@ import { io } from "socket.io-client";
 import { CanvasRecorder } from "./CanvasRecorder.ts";
 
 let server_url = "";
-if (import.meta.env.PROD) {
+if (!import.meta.env.PROD) {
   server_url = "wss://ledserver.andersons-m.lv";
 } else {
   server_url = "ws://localhost:3000";
@@ -26,29 +26,52 @@ socket.on("animationData", (data) => {
   recieveAnimation(data);
 });
 socket.on("animationSpeed", (data) => {
-  anim_speed = data
+  anim_speed = data;
 });
-let intervalhandle;
 
+let frame_count;
+let view;
+let frame = 0;
+let TICK_INTERVAL = Math.pow(anim_speed, -1) * 400;
 function recieveAnimation(data) {
-  const view = new Uint8Array(data);
-  const frame_count = view.length / (LED_COUNT * 3);
-  for (let frame = 0; frame < frame_count; frame++) {}
-  let frame = 0;
-  clearInterval(intervalhandle);  
-  intervalhandle = setInterval(() => {
-    for (let led = 0; led < LED_COUNT; led++) {
-      const red = led * 3 + frame * LED_COUNT * 3;
-      changeLED(led, view[red], view[red + 1], view[red + 2]);
-    }
-    if (frame == frame_count - 1) {
-      frame = 0;
-      return;
-    } else {
-      frame++;
-    }
-  }, Math.pow(anim_speed, -1) * 400);
+  view = new Uint8Array(data);
+  frame_count = view.length / (LED_COUNT * 3);
+  TICK_INTERVAL = Math.pow(anim_speed, -1) * 400;
+  frame = 0;
 }
+
+function animation_frame() {
+  for (let led = 0; led < LED_COUNT; led++) {
+    const red = led * 3 + frame * LED_COUNT * 3;
+    changeLED(led, view[red], view[red + 1], view[red + 2]);
+  }
+  if (frame == frame_count - 1) {
+    frame = 0;
+    return;
+  } else {
+    frame++;
+  }
+}
+
+let nextTick = performance.now() + TICK_INTERVAL;
+
+function loop() {
+  const now = performance.now();
+  if (now >= nextTick) {
+    if (view) {
+      animation_frame();
+    }
+
+    nextTick += TICK_INTERVAL;
+    if (now - nextTick > TICK_INTERVAL) {
+      nextTick = now + TICK_INTERVAL;
+    }
+  }
+
+  // Keep looping as fast as possible
+  requestAnimationFrame(loop);
+}
+loop();
 
 // socket.on("reciveAnimation", (data) => {
 //   clearInterval(intervalId);
