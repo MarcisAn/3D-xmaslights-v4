@@ -38,8 +38,16 @@ app.post("/pickAnim", (req, res) => {
   const pythonProcess = spawn("python3", [
     "../generators/animations/" + animation[0].name + ".py"
   ]);
-  pythonProcess.stdout.on("data", function (data) {
-    console.log(data.toString());
+  pythonProcess.stdout.on("data", (data) => {
+    console.log("stdout:", data.toString());
+  });
+
+  pythonProcess.stderr.on("data", (data) => {
+    console.error("stderr:", data.toString());
+  });
+
+  pythonProcess.on("exit", (code) => {
+    console.log("Process exited with code", code);
   });
   
   console.log("socket count: " + sockets.length);
