@@ -37,7 +37,7 @@ app.post("/pickAnim", (req, res) => {
   }
   const pythonProcess = spawn(
     "python3",
-    ["../generators/animations/" + animation[0].name + ".py"],
+    [animation[0].name + ".py"],
     { cwd: "../generators/animations" }
   );
   pythonProcess.stdout.on("data", (data) => {
