@@ -27,7 +27,7 @@ let frame_interval = 40;
 app.post("/pickAnim", (req, res) => {
   console.log(req.body.name);
   const animation = (result = animations.filter((obj) => {
-    return obj.b === 6;
+    return obj.name === req.body.name;
   }));
   if (!animation) {
     res.status(400).end();
