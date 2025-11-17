@@ -36,7 +36,7 @@ app.post("/pickAnim", (req, res) => {
     return;
   }
   const pythonProcess = spawn("python", [
-    "../generators/animations/" + animation.name + ".py"
+    "../generators/animations/" + animation[0].name + ".py"
   ]);
   console.log(pythonProcess.stdout);
   
