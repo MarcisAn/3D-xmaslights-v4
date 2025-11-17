@@ -21,7 +21,7 @@ const io = new Server(server);
 // Store the socket objects for active connections
 let sockets = [];
 // Store the active animation speed
-let animation_speed = 1;
+let frame_interval = 40;
 
 // Called when user picks an animation to play
 app.post("/pickAnim", (req, res) => {
@@ -38,7 +38,6 @@ app.post("/pickAnim", (req, res) => {
   ]);
   console.log(pythonProcess.stdout);
   
-  animation_speed = animation.speed;
   console.log("socket count: " + sockets.length);
 
   res.status(200).end();
@@ -57,6 +56,11 @@ app.post("/animationIsGenerated", async (req, res) => {
   });
   res.status(200).end();
 });
+
+app.post("/setAnimationSpeed", (req, res) => {
+  frame_interval = req.body.interval
+  res.status(200).end();
+})
 
 io.on("connection", (socket) => {
   console.log("user connected");
