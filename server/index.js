@@ -52,7 +52,7 @@ app.post("/animationIsGenerated", async (req, res) => {
     socket.emit("animationData", buffers);
   });
   sockets.forEach((socket) => {
-    socket.emit("animationSpeed", animation_speed);
+    socket.emit("animationSpeed", frame_interval);
   });
   res.status(200).end();
 });
