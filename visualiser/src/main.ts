@@ -19,24 +19,22 @@ const socket = io(server_url, {
 });
 let record = false;
 
-let anim_speed = 90;
 
 const LED_COUNT = 400;
 socket.on("animationData", (data) => {
   recieveAnimation(data);
 });
 socket.on("animationSpeed", (data) => {
-  anim_speed = data;
+  TICK_INTERVAL = data;
 });
 
 let frame_count;
 let view;
 let frame = 0;
-let TICK_INTERVAL = Math.pow(anim_speed, -1) * 400;
+let TICK_INTERVAL = 40;
 function recieveAnimation(data) {
   view = new Uint8Array(data);
   frame_count = view.length / (LED_COUNT * 3);
-  TICK_INTERVAL = Math.pow(anim_speed, -1) * 400;
   frame = 0;
 }
 

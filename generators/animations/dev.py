@@ -1,6 +1,9 @@
 from AnimationBuilder import AnimationBuilder
 
-builder = AnimationBuilder()
+# AnimationBuilder konstruktorā jānorāda milisekunžu intervāls starp animācijas kadriem
+# Ja intervāls ir mazāks par 15 ms, ir iespējams, ka pazudīs sinhronitāte starp eglīti un vizualizāciju
+INTERVAL_MS = 15
+builder = AnimationBuilder(INTERVAL_MS)
 
 # Piekļuve koordinātām
 # builder.cords[led_index][0] # X koordināta
