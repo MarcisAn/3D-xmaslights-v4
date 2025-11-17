@@ -35,10 +35,12 @@ app.post("/pickAnim", (req, res) => {
     res.status(400).end();
     return;
   }
-  const pythonProcess = spawn("python", [
+  const pythonProcess = spawn("python3", [
     "../generators/animations/" + animation[0].name + ".py"
   ]);
-  console.log(pythonProcess.stdout);
+  pythonProcess.stdout.on("data", function (data) {
+    console.log(data.toString());
+  });
   
   console.log("socket count: " + sockets.length);
 
