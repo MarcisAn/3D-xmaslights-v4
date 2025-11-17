@@ -35,9 +35,11 @@ app.post("/pickAnim", (req, res) => {
     res.status(400).end();
     return;
   }
-  const pythonProcess = spawn("python3", [
-    "../generators/animations/" + animation[0].name + ".py"
-  ]);
+  const pythonProcess = spawn(
+    "python3",
+    ["../generators/animations/" + animation[0].name + ".py"],
+    { cwd: "../generators/animations" }
+  );
   pythonProcess.stdout.on("data", (data) => {
     console.log("stdout:", data.toString());
   });
