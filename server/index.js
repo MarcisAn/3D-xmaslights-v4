@@ -29,7 +29,7 @@ app.post("/pickAnim", (req, res) => {
   const animation = (result = animations.filter((obj) => {
     return obj.name === req.body.name;
   }));
-  console.log(anim);
+  console.log(animation);
   
   if (!animation) {
     res.status(400).end();
