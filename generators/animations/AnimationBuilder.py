@@ -48,7 +48,7 @@ class AnimationBuilder:
         )
         requests.post(
             # "https://ledserver.andersons-m.lv/setAnimationSpeed",
-            "http://localhost:3000/animationIsGenerated",
+            "http://localhost:3000/setAnimationSpeed",
             json={"interval": self.interval},
         )
         print(req.status_code)
