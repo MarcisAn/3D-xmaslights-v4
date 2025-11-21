@@ -4,7 +4,7 @@ import { io } from "socket.io-client";
 import { CanvasRecorder } from "./CanvasRecorder.ts";
 
 let server_url = "";
-if (!import.meta.env.PROD) {
+if (import.meta.env.PROD) {
   server_url = "wss://ledserver.andersons-m.lv";
 } else {
   server_url = "ws://localhost:3000";

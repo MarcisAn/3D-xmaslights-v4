@@ -42,13 +42,13 @@ class AnimationBuilder:
 
         print(len(color_bytes))
         req = requests.post(
-            "https://ledserver.andersons-m.lv/animationIsGenerated",
-            # "http://localhost:3000/animationIsGenerated",
+            # "https://ledserver.andersons-m.lv/animationIsGenerated",
+            "http://localhost:3000/animationIsGenerated",
             data=bytearray(color_bytes),
         )
         requests.post(
-            "https://ledserver.andersons-m.lv/setAnimationSpeed",
-            # "http://localhost:3000/animationIsGenerated",
+            # "https://ledserver.andersons-m.lv/setAnimationSpeed",
+            "http://localhost:3000/setAnimationSpeed",
             json={"interval": self.interval},
         )
         print(req.status_code)
