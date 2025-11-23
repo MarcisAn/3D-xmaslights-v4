@@ -1,7 +1,6 @@
 'use client'
 
 import { Card } from '@/components/ui/card'
-import { Animation } from '@/app/page'
 
 
 export function TreeVisualizer() {
