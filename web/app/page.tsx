@@ -6,51 +6,14 @@ import { TreeVisualizer } from '@/components/tree-visualizer'
 import { Sparkles } from '@/components/sparkles'
 import { Snowflakes } from '@/components/snowflakes'
 
+import animations from "../../data/animations.json"
+
 export type Animation = {
-  id: string
   name: string
-  description: string
-  url: string
+  full_name: string
+  speed: number
 }
 
-const animations: Animation[] = [
-  {
-    id: 'twinkle',
-    name: 'Twinkle',
-    description: 'Classic twinkling lights that fade in and out randomly',
-    url: 'https://codepen.io/jackrugile/full/CaFHl',
-  },
-  {
-    id: 'chase',
-    name: 'Chase',
-    description: 'Lights chase each other around the tree',
-    url: 'https://codepen.io/tobyj/full/QjvEex',
-  },
-  {
-    id: 'wave',
-    name: 'Wave',
-    description: 'A smooth wave of light flows through the tree',
-    url: 'https://codepen.io/jackrugile/full/CaFHl',
-  },
-  {
-    id: 'sparkle',
-    name: 'Sparkle',
-    description: 'Bright sparkles burst across the tree',
-    url: 'https://codepen.io/jackrugile/full/CaFHl',
-  },
-  {
-    id: 'rainbow',
-    name: 'Rainbow',
-    description: 'Colors cycle through the rainbow spectrum',
-    url: 'https://codepen.io/tobyj/full/QjvEex',
-  },
-  {
-    id: 'strobe',
-    name: 'Strobe',
-    description: 'Fast flashing lights for a party vibe',
-    url: 'https://codepen.io/jackrugile/full/CaFHl',
-  },
-]
 
 export default function Home() {
   const [selectedAnimation, setSelectedAnimation] = useState<Animation>(animations[0])
@@ -76,7 +39,7 @@ export default function Home() {
 
       <main className="container mx-auto px-4 py-8 lg:py-12">
         <div className="grid gap-6 lg:grid-cols-[1fr_420px] lg:gap-8">
-          <TreeVisualizer animation={selectedAnimation} />
+          <TreeVisualizer />
           <AnimationList
             animations={animations}
             selectedAnimation={selectedAnimation}

@@ -3,5 +3,10 @@
         "name": "climbing_axis",
         "full_name": "Kāpšana pa virteni",
         "speed": 80
+    },
+    {
+      "name": "snake",
+      "full_name": "Čūskiņa",
+      "speed": 80
     }
 ]

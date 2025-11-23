@@ -1,11 +1,8 @@
 const express = require("express");
 const { createServer } = require("node:http");
-const { join } = require("node:path");
 const { Server } = require("socket.io");
 const cors = require("cors");
-const { log } = require("node:console");
 const spawn = require("child_process").spawn;
-const fs = require("fs");
 var bodyParser = require("body-parser");
 
 const animations = require("../data/animations.json");
@@ -15,6 +12,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.raw({ type: "application/octet-stream", limit: "2mb" }));
+
 const server = createServer(app);
 const io = new Server(server);
 
