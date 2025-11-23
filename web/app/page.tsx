@@ -11,7 +11,6 @@ import animations from "../../data/animations.json"
 export type Animation = {
   name: string
   full_name: string
-  speed: number
 }
 
 

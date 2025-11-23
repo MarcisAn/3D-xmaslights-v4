@@ -11,8 +11,6 @@ export function TreeVisualizer() {
           src={"https://tree-vis-v4.vercel.app/"}
           className="h-full w-full"
           style={{width: "300px", height: "300px", margin: "auto", overflow: "hidden"}}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          sandbox="allow-scripts allow-same-origin allow-presentation"
         />
       </div>
     </Card>
