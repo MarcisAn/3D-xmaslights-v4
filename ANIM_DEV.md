@@ -18,7 +18,7 @@ node index.js
 ```
 cd visualiser
 npm install
-npm dev
+npm run dev
 ```
 4. Nokopēt failu `generators/animations/dev.py` šajā pašā mapē un jaunajam failam piešķirt animācijas nosaukumu
 5. Šo failu palaižot animācija rādīsies vizualizācijā
