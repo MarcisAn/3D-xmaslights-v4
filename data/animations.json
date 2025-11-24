@@ -1,7 +1,18 @@
 [
-    {
-        "name": "climbing_axis",
-        "full_name": "Kāpšana pa virteni",
-        "speed": 80
-    }
+  {
+    "name": "climbing_axis",
+    "full_name": "Kāpšana pa virteni"
+  },
+  {
+    "name": "snake",
+    "full_name": "Čūskiņa"
+  },
+  {
+    "name": "rotating_box",
+    "full_name": "Rotējoša plakne"
+  },
+  {
+    "name": "fire",
+    "full_name": "Uguns"
+  }
 ]
