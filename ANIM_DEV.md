@@ -4,6 +4,7 @@
 
 - Python
 - NodeJS
+- Git (vēlams, bet var iztikt)
 
 ## Uzstādīšana
 
@@ -23,3 +24,4 @@ npm run dev
 4. Nokopēt failu `generators/animations/dev.py` šajā pašā mapē un jaunajam failam piešķirt animācijas nosaukumu
 5. Šo failu palaižot animācija rādīsies vizualizācijā
 6. Norādes animācijas rakstīšanai ir šajā failā
+7. Nogādājiet šo python failu pie manis ar pull request vai citādi
