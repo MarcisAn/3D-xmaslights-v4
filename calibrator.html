@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Vertical Line — Move with Mouse Wheel</title>
+    <style>
+      /* Full-viewport dark background so the white line is visible */
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        background: #0b0b0d;
+        color: #ddd;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow: hidden; /* keep wheel control in-app */
+      }
+
+      /* Container covers the whole screen */
+      .stage {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* The vertical line */
+      .vline {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 4px; /* thickness */
+        background: white;
+        transform: translateX(-50%); /* center by x coordinate */
+        will-change: transform;
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+        pointer-events: none; /* allow wheel events through */
+      }
+
+      /* The horizontal line (same element swapped to horizontal) */
+      .hline {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 4px; /* thickness */
+        background: white;
+        transform: translateY(-50%); /* center by y coordinate */
+        will-change: transform;
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+        pointer-events: none;
+      }
+
+      /* Small HUD showing the current X/Y in percent */
+      .hud {
+        position: fixed;
+        left: 12px;
+        top: 12px;
+        background: rgba(255, 255, 255, 0.06);
+        padding: 8px 10px;
+        border-radius: 8px;
+        backdrop-filter: blur(6px);
+        font-size: 13px;
+        color: #fff;
+        user-select: none;
+        transition: opacity 220ms ease;
+      }
+
+      .hint {
+        opacity: 0.7;
+        font-size: 12px;
+        margin-top: 4px;
+      }
+
+      .mode-btn {
+        margin-left: 8px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255,255,255,0.06);
+        color: #fff;
+        padding: 4px 8px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 12px;
+      }
+
+      /* Points panel */
+      .points-panel {
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        padding: 10px;
+        border-radius: 8px;
+        font-family: monospace;
+        max-height: 40vh;
+        overflow: auto;
+        white-space: pre;
+        min-width: 160px;
+        z-index: 1000;
+      }
+
+      .points-controls {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .btn {
+        background: rgba(255, 255, 255, 0.08);
+        border: none;
+        color: white;
+        padding: 6px 8px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 13px;
+      }
+
+      @media (max-width: 480px) {
+        .vline {
+          width: 3px;
+        }
+        .hud {
+          padding: 6px 8px;
+          font-size: 12px;
+        }
+        .points-panel {
+          left: 6px;
+          right: 6px;
+          min-width: unset;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage">
+      <div id="line" class="vline" aria-hidden="true"></div>
+    </div>
+
+    <div class="hud" id="hud">
+      <span id="label">x:</span> <span id="xval">0.0%</span>
+      <button id="modeBtn" class="mode-btn" title="Toggle axis">Horizontal</button>
+      <div class="hint" id="hint">
+        Use mouse wheel (or trackpad scroll) to move the line horizontally
+      </div>
+    </div>
+
+    <div id="pointsPanel" class="points-panel" aria-live="polite">
+      <div id="pointsList"></div>
+      <div class="points-controls">
+        <button id="copyBtn" class="btn">Copy</button>
+        <button id="clearBtn" class="btn">Clear</button>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const line = document.getElementById("line");
+        const xval = document.getElementById("xval");
+        const label = document.getElementById("label");
+        const hint = document.getElementById("hint");
+        const modeBtn = document.getElementById("modeBtn");
+        const pointsList = document.getElementById("pointsList");
+        const copyBtn = document.getElementById("copyBtn");
+        const clearBtn = document.getElementById("clearBtn");
+
+        let width = window.innerWidth; // used for converting wheel/touch deltas (horizontal)
+        let height = window.innerHeight; // used for vertical conversions
+        let coord = 0; // -100 to +100 percent
+        let mode = "horizontal"; // "horizontal" or "vertical"
+
+        const BASE_SENSITIVITY = 0.2; // tweak this if movement feels too slow/fast
+        const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+        const savedPoints = [];
+
+        function updateHudHint() {
+          if (mode === "horizontal") {
+            hint.textContent = "Use mouse wheel (or trackpad scroll) to move the line horizontally";
+            modeBtn.textContent = "Horizontal";
+            label.textContent = "x:";
+          } else {
+            hint.textContent = "Use mouse wheel (or trackpad scroll) to move the line vertically";
+            modeBtn.textContent = "Vertical";
+            label.textContent = "y:";
+          }
+        }
+
+        function updateLinePosition(c) {
+          // clamp, round to whole percent
+          const clamped = clamp(c, -100, 100);
+          const pctInt = Math.round(clamped); // whole-number percent (-100..100)
+
+          // invert both axes: always flip the sign for display/position
+          const displayVal = -pctInt;
+
+          // position: center (50%) plus half the percent range (percent -> -50..+50)
+          const pos = 50 + displayVal / 2;
+
+          if (mode === "horizontal") {
+            line.style.left = pos + "%";
+            line.style.top = "";
+            xval.textContent = displayVal + "%";
+          } else {
+            line.style.top = pos + "%";
+            line.style.left = "";
+            xval.textContent = displayVal + "%";
+          }
+        }
+
+        function onWheel(e) {
+          // prevent page scroll
+          if (e.preventDefault) e.preventDefault();
+
+          let delta = e.deltaY;
+          if (e.deltaMode === 1) delta *= 16; // lines
+          else if (e.deltaMode === 2) delta *= (mode === "horizontal" ? width : height); // pages
+
+          // Convert pixel delta -> percent delta
+          // dx / dimension * 200 (because full dimension corresponds to 200 percent range)
+          const dim = mode === "horizontal" ? width : height;
+          coord -= ((delta * BASE_SENSITIVITY) / dim) * 200;
+          coord = clamp(coord, -100, 100);
+          updateLinePosition(coord);
+        }
+
+        function onResize() {
+          width = window.innerWidth;
+          height = window.innerHeight;
+          coord = clamp(coord, -100, 100);
+          updateLinePosition(coord);
+        }
+
+        function onKey(e) {
+          if (mode === "horizontal") {
+            if (e.key === "ArrowLeft") coord -= 2;
+            else if (e.key === "ArrowRight") coord += 2;
+            else if (e.key === "Home") coord = -100;
+            else if (e.key === "End") coord = 100;
+          } else {
+            if (e.key === "ArrowUp") coord -= 2;
+            else if (e.key === "ArrowDown") coord += 2;
+            else if (e.key === "Home") coord = -100;
+            else if (e.key === "End") coord = 100;
+          }
+          coord = clamp(coord, -100, 100);
+          updateLinePosition(coord);
+        }
+
+        // Touch drag for mobile
+        let touchStartX = null;
+        let touchStartY = null;
+        window.addEventListener(
+          "touchstart",
+          (ev) => {
+            if (ev.touches && ev.touches[0]) {
+              touchStartX = ev.touches[0].clientX;
+              touchStartY = ev.touches[0].clientY;
+            }
+          },
+          { passive: true }
+        );
+
+        window.addEventListener(
+          "touchmove",
+          (ev) => {
+            if (!ev.touches || !ev.touches[0]) return;
+            if (mode === "horizontal") {
+              if (touchStartX === null) return;
+              const tx = ev.touches[0].clientX;
+              const dx = tx - touchStartX;
+              touchStartX = tx;
+              coord -= (dx / width) * 200;
+            } else {
+              if (touchStartY === null) return;
+              const ty = ev.touches[0].clientY;
+              const dy = ty - touchStartY;
+              touchStartY = ty;
+              coord -= (dy / height) * 200;
+            }
+            coord = clamp(coord, -100, 100);
+            updateLinePosition(coord);
+          },
+          { passive: true }
+        );
+
+        window.addEventListener(
+          "touchend",
+          () => {
+            touchStartX = null;
+            touchStartY = null;
+          },
+          { passive: true }
+        );
+
+        // Save current coord (percent) on left mouse click
+        function savePoint() {
+          // save as whole-number percent, with both-axis inversion applied
+          const clamped = clamp(coord, -100, 100);
+          const pctInt = Math.round(clamped);
+          const displayVal = -pctInt;
+          const v = String(displayVal);
+          savedPoints.push(v);
+          pointsList.textContent = savedPoints.join("\n");
+
+          const myHeaders = new Headers();
+          myHeaders.append("Content-Type", "application/json");
+
+          const raw = JSON.stringify({
+            value: -displayVal
+          });
+
+          fetch("http://127.0.0.1:8000/appenddecimal", {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+          })
+            .then((response) => response.text())
+            .then((result) => console.log(result))
+            .catch((error) => console.error(error));
+
+          fetch("http://127.0.0.1:8000/nextlight", {
+            method: "POST",
+          })
+            .then((response) => response.text())
+            .then((result) => console.log(result))
+            .catch((error) => console.error(error));
+        }
+
+        window.addEventListener("mousedown", (e) => {
+          // left button
+          if (e.button === 0) savePoint();
+        });
+
+        // Copy / Clear buttons
+        copyBtn.addEventListener("click", async () => {
+          try {
+            // Copy as newline-separated values (easy to paste into Excel)
+            await navigator.clipboard.writeText(savedPoints.join("\n"));
+            copyBtn.textContent = "Copied";
+            setTimeout(() => (copyBtn.textContent = "Copy"), 900);
+          } catch (err) {
+            // fallback: select the points panel text for manual copy
+            copyBtn.textContent = "Failed";
+            setTimeout(() => (copyBtn.textContent = "Copy"), 900);
+          }
+        });
+
+        clearBtn.addEventListener("click", () => {
+          savedPoints.length = 0;
+          pointsList.textContent = "";
+        });
+
+        // Toggle mode button
+        modeBtn.addEventListener("click", () => {
+          // flip mode
+          mode = mode === "horizontal" ? "vertical" : "horizontal";
+          // swap classes on the same element
+          if (mode === "horizontal") {
+            line.classList.remove("hline");
+            line.classList.add("vline");
+          } else {
+            line.classList.remove("vline");
+            line.classList.add("hline");
+          }
+          updateHudHint();
+          // recalc dims in case needed
+          onResize();
+        });
+
+        // HUD fade
+        let hudTimer = null;
+        const hud = document.getElementById("hud");
+        function showHud() {
+          hud.style.opacity = "1";
+          if (hudTimer) clearTimeout(hudTimer);
+          hudTimer = setTimeout(() => (hud.style.opacity = "0.6"), 1300);
+        }
+        ["wheel", "touchmove", "keydown", "mousedown"].forEach((evt) =>
+          window.addEventListener(evt, showHud, { passive: true })
+        );
+
+        // Init
+        updateHudHint();
+        updateLinePosition(coord);
+        window.addEventListener("wheel", onWheel, { passive: false });
+        window.addEventListener("resize", onResize);
+        window.addEventListener("keydown", onKey);
+        window.addEventListener("load", () => onResize());
+      })();
+    </script>
+  </body>
+</html>
