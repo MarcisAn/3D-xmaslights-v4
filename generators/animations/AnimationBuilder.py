@@ -40,7 +40,7 @@ class AnimationBuilder:
                 for v in led:
                     color_bytes.append(clamp(v))
 
-        print(len(color_bytes))
+        print("Animācijas garums baitos:", len(color_bytes))
         req = requests.post(
             # "https://ledserver.andersons-m.lv/animationIsGenerated",
             "http://localhost:3000/animationIsGenerated",
@@ -51,4 +51,4 @@ class AnimationBuilder:
             "http://localhost:3000/setAnimationSpeed",
             json={"interval": self.interval},
         )
-        print(req.status_code)
+        print("HTTP Status code:", req.status_code)
