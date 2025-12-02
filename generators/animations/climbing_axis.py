@@ -1,6 +1,6 @@
 from AnimationBuilder import AnimationBuilder
 
-builder = AnimationBuilder(20)
+builder = AnimationBuilder(30)
 
 # Piekļuve koordinātām
 # builder.cords[led_index][0] # X koordināta

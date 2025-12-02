@@ -55,12 +55,12 @@ def point_in_rotated_box(point, box_center, box_dims, rotation_deg):
 INTERVAL_MS = 15
 builder = AnimationBuilder(INTERVAL_MS)
 
-for rotation in range(0,360):
+for rotation in range(0,360, 2):
     for i in range(400):
         if point_in_rotated_box(
             (builder.cords[i][0], builder.cords[i][1], builder.cords[i][2]),
             (0, 0, 0),
-            (60, 1000, 1000),
+            (40, 1000, 1000),
             (rotation, rotation, rotation),
         ):
             builder.light(i, 255, 0, 0)
