@@ -9,7 +9,7 @@ if (import.meta.env.PROD) {
 } else {
   server_url = "ws://localhost:3000";
 }
-// server_url = "wss://ledserver.andersons-m.lv";
+server_url = "wss://ledserver.andersons-m.lv";
 const socket = io(server_url, {
   autoConnect: true,
   reconnection: true,

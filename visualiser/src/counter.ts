@@ -32,9 +32,9 @@ export const createScene = (el: any) => {
     const material = new THREE.MeshBasicMaterial({ color: 0x000000 });
 
     const cube = new THREE.Mesh(geometry, material);
-    cube.position.x = light.x / 900;
-    cube.position.z = light.y / 900;
-    cube.position.y = light.z / 900;
+    cube.position.x = 1.3 * light.x / 270;
+    cube.position.z = 1.3 * light.y / 270;
+    cube.position.y = 1.3 * light.z / 200 + 0.2
     cube.scale.x = 0.01;
     cube.scale.y = 0.01;
     cube.scale.z = 0.01;
