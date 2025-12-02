@@ -100,21 +100,3 @@ const readBodyAsBuffer = (req) => {
     });
   });
 };
-function spliceBuffers(buffers) {
-  const len = buffers
-    .map((buffer) => buffer.byteLength)
-    .reduce((prevLength, curr) => {
-      return prevLength + curr;
-    }, 0);
-
-  const tmp = new Uint8Array(len);
-
-  let bufferOffset = 0;
-
-  for (var i = 0; i < buffers.length; i++) {
-    tmp.set(new Uint8Array(buffers[i]), bufferOffset);
-    bufferOffset += buffers[i].byteLength;
-  }
-
-  return tmp;
-}
