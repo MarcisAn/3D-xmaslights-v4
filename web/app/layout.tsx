@@ -5,8 +5,8 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Christmas Tree Lights | Animation Picker',
-  description: 'Pick the perfect light animation for your Christmas tree',
+  title: '3D eglītes lampiņas',
+  description: '',
   generator: 'v0.app',
   icons: {
     icon: [
