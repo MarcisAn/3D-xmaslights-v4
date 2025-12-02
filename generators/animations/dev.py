@@ -5,26 +5,26 @@ from AnimationBuilder import AnimationBuilder
 INTERVAL_MS = 15
 builder = AnimationBuilder(INTERVAL_MS)
 
-# Piekļuve koordinātām
-# builder.cords[led_index][0] # X koordināta
-# builder.cords[led_index][1] # Y koordināta
-# builder.cords[led_index][2] # Z koordināta
+# Piekļuve noteiktas lampiņas koordinātām
+builder.cords[led_index][0] # X koordināta
+builder.cords[led_index][1] # Y koordināta
+builder.cords[led_index][2] # Z koordināta
 
 
 # Iedegt lampiņu
 # RGB vērtības ir skaitļi no 0 līdz 255
-# builder.light(led_index, red, green, blue)
+builder.light(led_index, red, green, blue)
 
 # Saglabāt animācijas kadru
-# builder.update()
+builder.update()
 
-# Pabeigt animāciju
-# builder.done()
-
-
+# Pabeigt animāciju un nosūtīt eglītei
+builder.done()
 
 
-# Zemāk esošais kods pakāpeniski iededzina visas lampiņas sarkanā krāsā
+
+
+# Šis kods pakāpeniski iededzina visas lampiņas sarkanā krāsā
 for i in range(400):
     builder.light(i, 255, 0, 0)
     builder.update()
