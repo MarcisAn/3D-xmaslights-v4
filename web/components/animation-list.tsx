@@ -43,10 +43,7 @@ export function AnimationList({
   return (
     <Card className="flex flex-col border-0 bg-card/95 backdrop-blur-md shadow-2xl">
       <div className="bg-primary/30 px-6 py-4 border-b-[6px] border-primary">
-        <h2 className="font-bold text-xl text-foreground">Animation Styles</h2>
-        <p className="text-sm text-foreground/90">
-          Choose your festive light pattern
-        </p>
+        <h2 className="font-bold text-xl text-foreground">Pieejamās animācijas</h2>
       </div>
       <div className="flex-1 space-y-3 p-6">
         {animations.map((animation) => {
