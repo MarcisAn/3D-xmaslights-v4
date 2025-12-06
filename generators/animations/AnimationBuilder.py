@@ -19,7 +19,7 @@ class AnimationBuilder:
             reader = csv.DictReader(csvfile)
             cords = []
             for row in reader:
-                cords.append((int(row["x"]), int(row["y"]), int(row["z"])))
+                cords.append((float(row["x"]), float(row["y"]), float(row["z"])))
             self.cords = cords
         self.interval = frame_interval_ms
 
@@ -42,13 +42,13 @@ class AnimationBuilder:
 
         print("Animācijas garums baitos:", len(color_bytes))
         req = requests.post(
-            # "https://ledserver.andersons-m.lv/animationIsGenerated",
-            "http://localhost:3000/animationIsGenerated",
+            "https://ledserver.andersons-m.lv/animationIsGenerated",
+            # "http://localhost:3000/animationIsGenerated",
             data=bytearray(color_bytes),
         )
         requests.post(
-            # "https://ledserver.andersons-m.lv/setAnimationSpeed",
-            "http://localhost:3000/setAnimationSpeed",
+            "https://ledserver.andersons-m.lv/setAnimationSpeed",
+            # "http://localhost:3000/setAnimationSpeed",
             json={"interval": self.interval},
         )
         print("HTTP Status code:", req.status_code)
