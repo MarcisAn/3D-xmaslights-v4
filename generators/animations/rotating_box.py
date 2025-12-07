@@ -59,13 +59,13 @@ for rotation in range(0,360, 2):
     for i in range(400):
         if point_in_rotated_box(
             (builder.cords[i][0], builder.cords[i][1], builder.cords[i][2]),
-            (0, 0, 0),
-            (40, 1000, 1000),
-            (rotation, rotation, rotation),
+            (0, 0, 30),
+            (10, 1000, 1000),
+            (0,0, rotation),
         ):
             builder.light(i, 255, 0, 0)
         else:
-            builder.light(i, 0, 50, 0)
+            builder.light(i, 0, 10, 0)
     builder.update()
 
 builder.done()

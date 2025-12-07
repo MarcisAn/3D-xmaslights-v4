@@ -1,8 +1,8 @@
-
 import time
 import os
 import socketio
 from rpi_ws281x import PixelStrip, ws, Color
+import gzip
 
 
 try:
@@ -10,8 +10,8 @@ try:
     print("Pinned process to CPU core 2")
 except Exception as e:
     print("CPU affinity not set:", e)
-    
-    
+
+
 try:
     os.nice(-10)
     print("Increased process priority")
@@ -87,7 +87,7 @@ def update_tick_interval(interval):
 def on_animation_data(data):
     global view, frame_count, frame
 
-    view = bytearray(data)
+    view = gzip.decompress(bytearray(data))
     frame_bytes = LED_COUNT * 3
 
     if len(view) % frame_bytes != 0:
@@ -127,6 +127,11 @@ def animation_frame():
     frame += 1
     if frame >= frame_count:
         frame = 0
+
+
+# ============================================================
+# MAIN ANIMATION LOOP
+# ============================================================
 
 
 def loop():

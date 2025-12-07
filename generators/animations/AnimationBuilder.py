@@ -2,6 +2,7 @@ import time
 import sys
 import csv
 import requests
+import gzip
 
 def clamp(x):
     return max(0, min(x, 255))
@@ -40,11 +41,13 @@ class AnimationBuilder:
                 for v in led:
                     color_bytes.append(clamp(v))
 
+        color_bytes = gzip.compress(bytearray(color_bytes))
+
         print("Animācijas garums baitos:", len(color_bytes))
         req = requests.post(
             "https://ledserver.andersons-m.lv/animationIsGenerated",
             # "http://localhost:3000/animationIsGenerated",
-            data=bytearray(color_bytes),
+            data=color_bytes,
         )
         requests.post(
             "https://ledserver.andersons-m.lv/setAnimationSpeed",

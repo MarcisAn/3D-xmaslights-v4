@@ -2,6 +2,7 @@ import { all_to_black, createScene, changeLED } from "./counter";
 import "./style.css";
 import { io } from "socket.io-client";
 import { CanvasRecorder } from "./CanvasRecorder.ts";
+import pako from "pako";
 
 let server_url = "";
 if (import.meta.env.PROD) {
@@ -9,7 +10,7 @@ if (import.meta.env.PROD) {
 } else {
   server_url = "ws://localhost:3000";
 }
-//server_url = "wss://ledserver.andersons-m.lv";
+server_url = "wss://ledserver.andersons-m.lv";
 const socket = io(server_url, {
   autoConnect: true,
   reconnection: true,
@@ -18,7 +19,6 @@ const socket = io(server_url, {
   transports: ["websocket"],
 });
 let record = false;
-
 
 const LED_COUNT = 400;
 socket.on("animationData", (data) => {
@@ -33,7 +33,8 @@ let view;
 let frame = 0;
 let TICK_INTERVAL = 40;
 function recieveAnimation(data) {
-  view = new Uint8Array(data);
+  const comp_view = new Uint8Array(data);
+  view = pako.ungzip(comp_view);
   frame_count = view.length / (LED_COUNT * 3);
   frame = 0;
 }
