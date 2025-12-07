@@ -14,5 +14,21 @@
   {
     "name": "fire",
     "full_name": "Uguns"
+  },
+  {
+    "name": "expanding_spheres",
+    "full_name": "Lodes"
+  },
+  {
+    "name": "falling",
+    "full_name": "Krītoši stabi"
+  },
+  {
+    "name": "helix",
+    "full_name": "Spirāle"
+  },
+  {
+    "name": "vert_stripes",
+    "full_name": "Strīpas"
   }
 ]

@@ -41,9 +41,11 @@ class AnimationBuilder:
                 for v in led:
                     color_bytes.append(clamp(v))
 
+        print("Animācijas garums kadros:", int(len(color_bytes)/3/400))
+        print("Animācijas lielums baitos (pirms saspiešanas):", len(color_bytes))
         color_bytes = gzip.compress(bytearray(color_bytes))
 
-        print("Animācijas garums baitos:", len(color_bytes))
+        print("Animācijas lielums baitos:", len(color_bytes))
         req = requests.post(
             "https://ledserver.andersons-m.lv/animationIsGenerated",
             # "http://localhost:3000/animationIsGenerated",
