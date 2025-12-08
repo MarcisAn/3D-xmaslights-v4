@@ -46,7 +46,7 @@ class LoopingBallParticle:
 class LoopingParticleSystem:
 
     def __init__(
-        self, count=10000, bounds=(-200, 200, -200, 200, -200, 400), loop_time=5.0
+        self, count=10000, bounds=(-50, 50, -50, 50, 0, 100), loop_time=5.0
     ):
         self.particles = [
             LoopingBallParticle(bounds, loop_time=loop_time) for _ in range(count)

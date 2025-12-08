@@ -2,7 +2,7 @@ import math
 import colorsys
 from AnimationBuilder import AnimationBuilder
 
-INTERVAL_MS = 15
+INTERVAL_MS = 25
 builder = AnimationBuilder(INTERVAL_MS)
 
 NUM_LEDS = len(builder.cords)

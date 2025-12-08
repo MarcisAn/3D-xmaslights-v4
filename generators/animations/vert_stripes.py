@@ -14,7 +14,7 @@ NUM_STRIPES = 5  # number of vertical stripes
 STRIPE_SPEED = 0.45  # units per frame (move up)
 STRIPE_WIDTH = 100.15  # horizontal width of each stripe
 STRIPE_LENGTH = 10.6  # vertical length of stripe
-TOTAL_FRAMES = 100
+TOTAL_FRAMES = 500
 HUE_SPEED = 0.005  # amount hue shifts per frame
 
 # Find min/max Z in your tree for wrapping

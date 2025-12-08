@@ -24,7 +24,7 @@ while True:
     snake_length += 1
     builder.wait(25)
 
-    if snake_length > 7:
+    if snake_length > 11:
         break
 
 builder.done()
