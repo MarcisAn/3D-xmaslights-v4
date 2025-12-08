@@ -25,7 +25,7 @@ class AnimationBuilder:
         self.interval = frame_interval_ms
 
     def light(self, index, red, green, blue):
-        self.light_state[index] = (clamp(red), clamp(green), clamp(blue))
+        self.light_state[index] = (clamp(int(red)), clamp(int(green)), clamp(int(blue)))
 
     def update(self):
         self.frames.append(self.light_state.copy())
