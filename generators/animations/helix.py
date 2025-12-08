@@ -2,7 +2,7 @@ import math
 import colorsys
 from AnimationBuilder import AnimationBuilder
 
-INTERVAL_MS = 25
+INTERVAL_MS = 40
 builder = AnimationBuilder(INTERVAL_MS)
 
 NUM_LEDS = len(builder.cords)
@@ -14,7 +14,7 @@ NUM_HELICES = 1  # how many helix strands
 HELIX_RADIUS = 20.3  # distance from center for LEDs to be lit
 HELIX_THICKNESS = 20.15  # how far an LED can deviate from the helix to light
 HELIX_TURNS = 3  # number of turns from bottom to top
-HELIX_SPEED = 0.12  # rotation speed per frame (radians)
+HELIX_SPEED = 0.062  # rotation speed per frame (radians)
 TOTAL_FRAMES = 900
 HUE_SPEED = 0.005  # amount hue shifts per frame
 
