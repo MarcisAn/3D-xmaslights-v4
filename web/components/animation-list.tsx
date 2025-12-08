@@ -18,7 +18,7 @@ export function AnimationList({
 }: AnimationListProps) {
   
   function selectAnim(animation: Animation) {
-    onSelectAnimation(animation);
+    // onSelectAnimation(animation);
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     
@@ -53,21 +53,13 @@ export function AnimationList({
               key={animation.name}
               onClick={() => selectAnim(animation)}
               className={cn(
-                "group relative w-full border-l-[6px] bg-muted/80 p-4 text-left transition-all hover:bg-secondary/30 hover:border-secondary hover:shadow-lg",
-                isSelected
-                  ? "border-primary bg-primary/20 shadow-xl"
-                  : "border-transparent"
+                "group relative w-full border-l-[6px] bg-muted/80 p-4 text-left transition-all hover:bg-secondary/30 hover:border-secondary hover:shadow-lg border-transparent"
               )}>
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1">
                   <h3 className="font-bold text-foreground">
                     {animation.full_name}
                   </h3>
-                </div>
-                <div
-                  className="flex h-6 w-6 shrink-0 items-center justify-center bg-primary text-primary-foreground opacity-0 transition-opacity data-[selected=true]:opacity-100 shadow-lg"
-                  data-selected={isSelected}>
-                  <Check className="h-4 w-4" />
                 </div>
               </div>
             </button>

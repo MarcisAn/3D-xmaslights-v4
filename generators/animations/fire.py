@@ -5,7 +5,7 @@ import random
 
 
 class LoopingBallParticle:
-    def __init__(self, bounds, radius_range=(30.1, 100.3), loop_time=5.0):
+    def __init__(self, bounds, radius_range=(30.1, 60.3), loop_time=5.0):
         xmin, xmax, ymin, ymax, zmin, zmax = bounds
 
         # Base rest position
