@@ -3,7 +3,7 @@ from AnimationBuilder import AnimationBuilder
 builder = AnimationBuilder(30)
 
 
-for slider in range(-50,110, 5):
+for slider in range(-50,110, 2):
     for i in range(400):
         if builder.cords[i][0] < slider:
             builder.light(i, 255, 0, 0)
@@ -11,7 +11,7 @@ for slider in range(-50,110, 5):
             builder.light(i, 0, 0, 0)
     builder.update()
 
-for slider in range(-50, 100, 5):
+for slider in range(-50, 100, 2):
     for i in range(400):
         if builder.cords[i][1] < slider:
             builder.light(i, 0, 255, 0)
@@ -19,7 +19,7 @@ for slider in range(-50, 100, 5):
             builder.light(i, 0, 0, 0)
     builder.update()
 
-for slider in range(0, 200, 5):
+for slider in range(0, 200, 2):
     for i in range(400):
         if builder.cords[i][2] < slider:
             builder.light(i, 0, 0, 255)
